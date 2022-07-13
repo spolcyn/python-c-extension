@@ -2,20 +2,26 @@
 
 import helloworld
 import asyncio
+import concurrent
+
+
+def fn():
+    print(helloworld.hello())
 
 
 async def main():
     print("running")
+    executor = concurrent.futures.ThreadPoolExecutor()
+    # executor = concurrent.futures.ProcessPoolExecutor()
 
-    def fn():
-        print(helloworld.hello())
-
+    print("creating task")
     task = asyncio.create_task(
         asyncio.wait_for(
-            asyncio.get_running_loop().run_in_executor(None, fn),
+            asyncio.get_running_loop().run_in_executor(executor, fn),
             timeout=None,
         )
     )
+    print("created task")
 
     while True:
         print("preparing to sleep")
